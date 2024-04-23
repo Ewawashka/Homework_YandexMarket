@@ -8,13 +8,17 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author Алейникова Александра
+ */
 public class BaseTest {
     protected WebDriver chromeDriver;
 
     @BeforeEach
     public void beforeTests() {
         ChromeOptions options = new ChromeOptions();
-        System.setProperty("webdriver.chrome.driver", System.getenv("CHROME_DRIVER"));
+        //System.setProperty("webdriver.chrome.driver", System.getenv("CHROME_DRIVER"));
+        System.setProperty("webdriver.chrome.driver","C:\\Users\\Beach Bum\\Desktop\\YandexWork\\chromedriver-win64\\chromedriver.exe");
         chromeDriver = new ChromeDriver();
         chromeDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         chromeDriver.manage().window().maximize();
@@ -23,12 +27,7 @@ public class BaseTest {
 
     @AfterEach
     public void afterTests() {
-//        try {                     //убери
-//            Thread.sleep(60000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        chromeDriver.quit();
-//    }
+        chromeDriver.quit();
+
     }
 }

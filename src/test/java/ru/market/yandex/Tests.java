@@ -4,14 +4,16 @@ package ru.market.yandex;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import pages.CatalogPopUpMenu;
-import pages.NoutbukPage;
+import pages.LaptopPage;
 import steps.AllSteps;
 
 import java.util.List;
 
+/**
+ * @author Алейникова Александра
+ */
 public class Tests  extends BaseTest{
     @Feature("Выполнение задания 1.4 по YandexMarket" )
     @DisplayName("Прохождение чек листа YandexMarket с помощью PO, все проверки в степах")
@@ -22,11 +24,11 @@ public class Tests  extends BaseTest{
                                   List<String> manufactures, String givenNumber){
         AllSteps.openBrowserAndSitePage(siteLink,chromeDriver);
         CatalogPopUpMenu catalogPopUpMenu = AllSteps.openCatalog(chromeDriver);
-        catalogPopUpMenu =  AllSteps.HoverCursorOverTheSelectionSection(catalogSectionName,catalogPopUpMenu,chromeDriver);
-        NoutbukPage noutbukPage = AllSteps.selectCategories(catalogCategoriesName,catalogPopUpMenu,chromeDriver);
-        AllSteps.checkCategoriesName(catalogCategoriesName,noutbukPage);
-    //    AllSteps.setPrays(minPrays,maxPrays,noutbukPage);
-    //    AllSteps.selectManufacturer(manufactures,noutbukPage);
-        // AllSteps.checkNumberOfElementsDisplayed(givenNumber,noutbukPage);
+        AllSteps.HoverCursorOverTheSelectionSection(catalogSectionName,catalogPopUpMenu,chromeDriver);
+        LaptopPage laptopPage = AllSteps.selectCategories(catalogCategoriesName,catalogPopUpMenu,chromeDriver);
+        AllSteps.checkCategoriesName(catalogCategoriesName,laptopPage);
+    //    AllSteps.setPrays(minPrays,maxPrays,laptopPage);
+    //    AllSteps.selectManufacturer(manufactures,laptopPage);
+        // AllSteps.checkNumberOfElementsDisplayed(givenNumber,laptopPage);
     }
 }

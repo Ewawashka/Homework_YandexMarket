@@ -9,15 +9,27 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * класс домашней страницы Яндекс маркета
+ * Класс YandexMarketHomePage представляет собой домашнюю страницу Яндекс.Маркета.
+ * Он наследуется от класса AbstractPage и предоставляет методы для взаимодействия
+ * с элементами домашней страницы.
+ * @author  Александра Алейникова
  */
+
 public class YandexMarketHomePage extends AbstractPage {
+
     /**
-     * кнопка каталога на домашней странице
+     * WebElement, представляющий кнопку "Каталог" на главной странице.
      */
-
     protected WebElement catalogButton;
-
+    /**
+     * Конструктор класса YandexMarketHomePage.
+     *
+     * <p>Принимает экземпляр WebDriver в качестве входных данных, вызывает
+     * конструктор родительского класса AbstractPage и ожидает появления
+     * элемента "Каталог" на странице.</p>
+     *
+     * @param driver Экземпляр WebDriver, используемый для взаимодействия с веб-страницей.
+     */
     public YandexMarketHomePage(WebDriver driver) {
         super(driver);
         waitElement.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@data-baobab-name='catalog']")));
@@ -25,9 +37,16 @@ public class YandexMarketHomePage extends AbstractPage {
     }
 
     /**
-     * кликаем на кнопку каталога
-     * @return объект страницы каталога
+     * Кликает по кнопке "Каталог" и возвращает объект CatalogPopUpMenu.
+     *
+     * <p>Метод находит кнопку "Каталог" с помощью заранее
+     * инициализированного поля `catalogButton`, кликает по ней и
+     * возвращает новый объект CatalogPopUpMenu, представляющий
+     * всплывающее меню каталога.</p>
+     *
+     * @return Новый объект CatalogPopUpMenu, представляющий всплывающее меню каталога.
      */
+
     public CatalogPopUpMenu clickOnCatalogButton(){
 
         catalogButton.click();
