@@ -21,14 +21,19 @@ public class Tests  extends BaseTest{
     @MethodSource("helpers.DataProvider#setParameters")
     public void yandexMarketTests(String siteLink, String catalogSectionName,
                                   String catalogCategoriesName, String minPrays, String maxPrays,
-                                  List<String> manufactures, String givenNumber){
+                                  List<String> manufactures, String givenNumber,String laptopPageNumber, String laptopOnPageNumber){
         AllSteps.openBrowserAndSitePage(siteLink,chromeDriver);
         CatalogPopUpMenu catalogPopUpMenu = AllSteps.openCatalog(chromeDriver);
         AllSteps.HoverCursorOverTheSelectionSection(catalogSectionName,catalogPopUpMenu,chromeDriver);
         LaptopPage laptopPage = AllSteps.selectCategories(catalogCategoriesName,catalogPopUpMenu,chromeDriver);
         AllSteps.checkCategoriesName(catalogCategoriesName,laptopPage);
-    //    AllSteps.setPrays(minPrays,maxPrays,laptopPage);
-    //    AllSteps.selectManufacturer(manufactures,laptopPage);
-        // AllSteps.checkNumberOfElementsDisplayed(givenNumber,laptopPage);
+        AllSteps.setPrays(minPrays,maxPrays,laptopPage);
+        AllSteps.selectManufacturer(manufactures,laptopPage);
+        AllSteps.checkNumberOfElementsDisplayed(givenNumber,laptopPage);
+        AllSteps.isSelectedManufacturesOnAllProductPage(manufactures,laptopPage);
+        String saveLaptopName =  AllSteps.rememberFirstLaptopOnFirstPage(laptopPage,laptopPageNumber,laptopOnPageNumber);
+        AllSteps.enteringAStoredValue(laptopPage,saveLaptopName);
+        AllSteps.clickOnSearchButton(laptopPage);
+        AllSteps.isProductPresentOnFirstPage(laptopPage, saveLaptopName);
     }
 }

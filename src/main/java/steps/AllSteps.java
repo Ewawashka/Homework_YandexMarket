@@ -56,7 +56,22 @@ public class AllSteps {
     public static void isSelectedManufacturesOnAllProductPage(List<String> manufacturer, LaptopPage laptopPage){
         AssertionSteps.checkingIfOffersMatchFilters(laptopPage.manufacturerFilterComplianceCheck(manufacturer));
 }
-
+    @Step("Вернуться на {laptopPageNumber} страницу с результатами поиска ноутбуков и запомнить {laptopNumber} наименование ноутбука")
+    public static String rememberFirstLaptopOnFirstPage(LaptopPage laptopPage,String laptopPageNumber,String laptopNumber){
+    return   laptopPage.storedLaptop(Integer.parseInt(laptopPageNumber),Integer.parseInt(laptopNumber));
+    }
+    @Step("В поисковую строку ввести запомненное значение.")
+    public static void enteringAStoredValue(LaptopPage laptopPage, String laptopName){
+        laptopPage.enteringAStoredValue(laptopName);
+    }
+    @Step("Нажать кнопку «Найти»")
+    public static void clickOnSearchButton(LaptopPage laptopPage){
+        laptopPage.clickOnSearchField();
+    }
+    @Step("Проверить, что в результатах поиска, на первой странице, есть искомый товар")
+    public static void  isProductPresentOnFirstPage(LaptopPage laptopPage, String saveLaptopName){
+        AssertionSteps.checkingSearchResults(laptopPage.findProductOnFirstPage(saveLaptopName));
+    }
 }
 
 

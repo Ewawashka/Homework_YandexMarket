@@ -28,6 +28,8 @@ public class DataProvider {
      *   <li>Максимальная цена (String)</li>
      *   <li>Список производителей ноутбуков (List<String>)</li>
      *   <li>Запрашиваемое количество результатов на странице (String)</li>
+     *   <li>Номер запрашиваемой страницы ноутбуков(String)</li>
+     *   <li>Номер сохраняемого ноутбука(String)</li>
      * </ul>
      *
      * @return Поток аргументов (Stream<Arguments>),
@@ -38,7 +40,7 @@ public class DataProvider {
         manufactures.add("Lenovo");
         manufactures.add("HP");
         return Stream.of(
-                Arguments.of("https://market.yandex.ru/","Ноутбуки и компьютеры","Ноутбуки","10000","30000",manufactures,"12")
+                Arguments.of("https://market.yandex.ru/","Ноутбуки и компьютеры","Ноутбуки","10000","30000",manufactures,"12","1","1")
         );
     }
 }

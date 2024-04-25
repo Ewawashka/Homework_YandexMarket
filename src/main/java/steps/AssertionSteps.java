@@ -18,9 +18,14 @@ public class AssertionSteps {
     public static void checkCountSearchingElements(String givenNumber, int realCountOfElements){
     Assertions.assertTrue(Integer.parseInt(givenNumber) < realCountOfElements,"На первой странице отображается "+realCountOfElements +" элементов товаров.");
 }
-@Step ("На всех страницах маркета предложения соответствуют выставленным фильтрам{List<String> manufacturer}")
+@Step ("На всех страницах маркета предложения соответствуют выставленным фильтрам")
     public static void checkingIfOffersMatchFilters( Boolean manufacturerFilterComplianceCheck){
-    Boolean defaultCondition = true;
+    boolean defaultCondition = true;
     Assertions.assertTrue(defaultCondition==manufacturerFilterComplianceCheck,"Предложения на все страницах соответствуют фильтру");
+}
+@Step("Искомый товар есть на первой странице поиска")
+    public static void checkingSearchResults(Boolean isDisable){
+    boolean defaultCondition = true;
+    Assertions.assertTrue(defaultCondition == isDisable,"Искомый товар присутствует на странице");
 }
 }

@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Алейникова Александра
@@ -18,8 +19,10 @@ public class LaptopPage extends AbstractPage {
     protected WebElement minPrays;
     protected WebElement maxPrays;
     protected WebElement manufacturerRadioButton;
-    protected String firstLaptopPageUrl;
+    protected List <String> laptopPagesUrls = new ArrayList<>();
     protected String allProductsOnPageXpath;
+    protected WebElement searchField;
+    protected WebElement searchButton;
 
     public LaptopPage(WebDriver driver) {
         super(driver);
@@ -29,80 +32,113 @@ public class LaptopPage extends AbstractPage {
         return driver.findElement(By.xpath("//h1[@data-auto='title']")).getText();
     }
 
-    public LaptopPage setMinPrays(String minNumber) {
+    public void setMinPrays(String minNumber) {
         minPrays = driver.findElement(By.xpath("//input[contains(@id,'range-filter-field-glprice') and contains(@id,'min')]"));
         minPrays.sendKeys(minNumber);
-        return this;
+
     }
 
-    public LaptopPage setMaxPrays(String maxNumber) {
+    public void setMaxPrays(String maxNumber) {
         maxPrays = driver.findElement(By.xpath("//input[contains(@id,'range-filter-field-glprice') and contains(@id,'max')]"));
         maxPrays.sendKeys(maxNumber);
-        return this;
+
     }
 
-    public LaptopPage setManufacturer(List<String> manufacturer) {
+    public void setManufacturer(List<String> manufacturer) {
 
-        for (int i = 0; i < manufacturer.size(); i++) {
-            manufacturerRadioButton = driver.findElement(By.xpath("//div[contains(@data-zone-data,'Производитель')]//fieldset//div[contains(@data-zone-data,'" + manufacturer.get(i) + "')]"));
+        for (String s : manufacturer) {
+            manufacturerRadioButton = driver.findElement(By.xpath("//div[contains(@data-zone-data,'Производитель')]//fieldset//div[contains(@data-zone-data,'" + s + "')]"));
             manufacturerRadioButton.click();
         }
-        return this;
+
     }
 
     public int findAllProductsOnFirstPage() {
-        allProductsOnPageXpath = "//div[@id='/marketfrontSerpLayout']//div/article";
+        waitElement.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='/marketfrontSerpLayout']//div/article[@data-auto='searchOrganic']")));
+        allProductsOnPageXpath = "//div[@id='/marketfrontSerpLayout']//div/article[@data-auto='searchOrganic']";
         List<WebElement> allSelectedProductsOnFirstPage = driver.
                 findElements(By.xpath(allProductsOnPageXpath));
-        System.out.println(allSelectedProductsOnFirstPage.size()+"количество ноутбуков на странице"); //  убрать потом
+        System.out.println(allSelectedProductsOnFirstPage.size() + "количество ноутбуков на странице"); //  убрать потом
         return allSelectedProductsOnFirstPage.size();
     }
 
     public Boolean manufacturerFilterComplianceCheck(List<String> manufacturer) {
-        firstLaptopPageUrl = driver.getCurrentUrl();
-        String currentUrl = driver.getCurrentUrl();
+
+       laptopPagesUrls.add(driver.getCurrentUrl());
         List<WebElement> currentPageProducts;
         Boolean allProductsComply = true;
-        while (allProductsComply) {
+        int lastListSize = 0;
+        for (int i = 0; i < 100; i++) {
+            waitForLoad(driver);
             currentPageProducts = driver.findElements(By.xpath(allProductsOnPageXpath + "//h3"));
-            for (int i = 0; i < currentPageProducts.size(); i++) {
-                String elementText = currentPageProducts.get(i).getText();
-                Boolean found = false;
+            int currentProductSize = currentPageProducts.size();
+
+            if (currentProductSize == lastListSize) {
+                break;
+            }
+            for (int j = lastListSize; j < currentProductSize; j++) {
+
+                String elementText = currentPageProducts.get(j).getText();
+                boolean found = false;
                 for (String manufacturerItem : manufacturer
                 ) {
-                    if (elementText.contains(manufacturerItem)) {
+                    if (elementText.toLowerCase().contains(manufacturerItem.toLowerCase(Locale.ROOT))) {
                         found = true;
                         break;
                     }
-
                 }
                 if (!found) {
-                    WebElement checkingLaptop = currentPageProducts.get(i).findElement(By.xpath("/.."));
+                    WebElement checkingLaptop = currentPageProducts.get(j).findElement(By.xpath("../.."));
                     checkingLaptop.click();
+                    ArrayList<String> tabs = new ArrayList<>(driver.getWindowHandles());
+                    driver.switchTo().window(tabs.get(1));
+                    System.out.println(elementText + " заходим на страницу ноутбука не соответствующего фильтру");
                     CheckingLaptopPage checkLaptopDescription = new CheckingLaptopPage(driver);
                     allProductsComply = checkLaptopDescription.searchForTextInTheLaptopDescription(manufacturer);
-                    if(!allProductsComply){
-                        System.out.println("найдено не соответствие фильтру");
-                        break;
-                    }
-                    driver.get(currentUrl);
+                    driver.close();
+                    driver.switchTo().window(tabs.get(0));
+
                 }
+                if (!allProductsComply) {
+                    System.out.println("найдено не соответствие фильтру");
+                    break;
+                }
+                lastListSize++;
             }
-            currentPageProducts = nextProductPage();
-            currentUrl = driver.getCurrentUrl();
+            scrollToElement(driver,currentPageProducts.get(currentPageProducts.size()-1));
+            laptopPagesUrls.add(driver.getCurrentUrl());
+            if (!allProductsComply) {
+                break;
+            }
         }
         return allProductsComply;
     }
-
-    public List<WebElement> nextProductPage() {
-        driver.findElement(By.xpath("//div[@data-baobab-name='next'] ")).click();
-        waitForLoad(driver);
-        return driver.findElements(By.xpath(allProductsOnPageXpath + "//h3"));
+    public String storedLaptop(int position, int pageNumber){
+        driver.get(laptopPagesUrls.get(pageNumber-1));
+        return   driver.findElements(By.xpath(allProductsOnPageXpath + "//h3")).get(position-1).getText();
 
     }
+    public void enteringAStoredValue(String laptopName){
+        searchField = driver.findElement(By.xpath("//input[@id='header-search']"));
+        searchField.sendKeys(laptopName);
+    }
+    public void clickOnSearchField(){
+        searchButton = driver.findElement(By.xpath("//button[@data-auto='search-button']"));
+        searchButton.click();
+    }
+    public Boolean findProductOnFirstPage(String saveLaptopName){
+     return   driver.findElement(By.xpath("//h3[contains(text(),'"+saveLaptopName+"')]")).isDisplayed();
+        }
+
+
+
     void waitForLoad(WebDriver driver) {
         new WebDriverWait(driver, 30).until((ExpectedCondition<Boolean>) wd ->
                 ((JavascriptExecutor) wd).executeScript("return document.readyState").equals("complete"));
+    }
+    void scrollToElement(WebDriver driver, WebElement element){
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript("arguments[0].scrollIntoView();", element);
     }
 
 }
