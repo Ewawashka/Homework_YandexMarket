@@ -115,7 +115,8 @@ public class LaptopPage extends AbstractPage {
     }
     public String storedLaptop(int position, int pageNumber){
         driver.get(laptopPagesUrls.get(pageNumber-1));
-        return   driver.findElements(By.xpath(allProductsOnPageXpath + "//h3")).get(position-1).getText();
+        List<WebElement> pageProductList = driver.findElements(By.xpath( "//div/article[@data-auto='searchOrganic']//h3"));
+        return   pageProductList.get(position-1).getText();
 
     }
     public void enteringAStoredValue(String laptopName){
