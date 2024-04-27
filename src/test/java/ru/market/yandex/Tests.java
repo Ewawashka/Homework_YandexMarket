@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import pages.CatalogPopUpMenu;
 import pages.LaptopPage;
 import steps.AllSteps;
+import static helpers.Properties.testsProperties;
 
 import java.util.List;
 
@@ -19,10 +20,10 @@ public class Tests  extends BaseTest{
     @DisplayName("Прохождение чек листа YandexMarket с помощью PO, все проверки в степах")
     @ParameterizedTest(name="{displayName}: {arguments}")
     @MethodSource("helpers.DataProvider#setParameters")
-    public void yandexMarketTests(String siteLink, String catalogSectionName,
+    public void yandexMarketTests( String catalogSectionName,
                                   String catalogCategoriesName, String minPrays, String maxPrays,
                                   List<String> manufactures, String givenNumber,String laptopPageNumber, String laptopOnPageNumber){
-        AllSteps.openBrowserAndSitePage(siteLink,chromeDriver);
+        AllSteps.openBrowserAndSitePage(testsProperties.yandexMarketUrl(),chromeDriver);
         CatalogPopUpMenu catalogPopUpMenu = AllSteps.openCatalog(chromeDriver);
         AllSteps.HoverCursorOverTheSelectionSection(catalogSectionName,catalogPopUpMenu,chromeDriver);
         LaptopPage laptopPage = AllSteps.selectCategories(catalogCategoriesName,catalogPopUpMenu,chromeDriver);

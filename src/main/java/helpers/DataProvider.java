@@ -40,7 +40,7 @@ public class DataProvider {
         manufactures.add("Lenovo");
         manufactures.add("HP");
         return Stream.of(
-                Arguments.of("https://market.yandex.ru/","Ноутбуки и компьютеры","Ноутбуки","10000","30000",manufactures,"12","1","1")
+                Arguments.of("Ноутбуки и компьютеры","Ноутбуки","10000","30000",manufactures,"12","1","1")
         );
     }
 }
